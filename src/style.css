@@ -22,10 +22,3 @@ body {
   display: grid;
   place-items: center;
 }
-
-.text {
-  color: white;
-  font-size: 2.5rem;
-  font-family: "Arial", sans-serif;
-  font-weight: bold;
-}
