@@ -7,14 +7,14 @@ html,
 body {
   height: 100vh;
   background-color: #000;
+  background-color: #fff;
 }
 
 .webgl {
-  position: fixed;
-  top: 0;
-  left: 0;
+  /* position: fixed; */
+  /* top: 0; */
+  /* left: 0; */
   outline: none;
-  mix-blend-mode: exclusion;
 }
 
 .container {

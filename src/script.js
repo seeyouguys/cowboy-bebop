@@ -27,14 +27,14 @@ scene.add(pointLight);
  * Sizes
  */
 const sizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
+  width: 950,
+  height: 700,
 };
 
 window.addEventListener("resize", () => {
   // Update sizes
-  sizes.width = window.innerWidth;
-  sizes.height = window.innerHeight;
+  // sizes.width = window.innerWidth
+  // sizes.height = window.innerHeight
 
   // Update camera
   camera.aspect = sizes.width / sizes.height;
@@ -67,7 +67,7 @@ controls.enableDamping = true;
  */
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
-  alpha: true,
+  alpha: false,
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
