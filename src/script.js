@@ -13,9 +13,54 @@ const scene = new THREE.Scene(); // Scene
 
 // В этом объекте хранятся все материалы
 const materials = {
-};
+  changeMe: new THREE.MeshLambertMaterial(),
+}
 
-const gui = new dat.GUI();
+const gui = new dat.GUI()
+
+const displayGroup = new THREE.Group()
+
+// ободок дисплея
+const wheelGeom = new THREE.TorusGeometry(0.75, 0.05, 16, 100)
+const wheel = new THREE.Mesh(wheelGeom, materials.changeMe)
+wheel.position.set(0, -.3, 0)
+displayGroup.add(wheel)
+
+// панелька дисплея
+const panelShape = new THREE.Shape()
+    .moveTo(-5, -5)
+    .lineTo(-5, 4)
+    .quadraticCurveTo(-5, 5, -4, 5)
+    .lineTo(4, 5)
+    .quadraticCurveTo(5, 5, 5, 4)
+    .lineTo(5, -5)
+    .lineTo(-5, -5)
+
+const panelGeometry = new THREE.ExtrudeGeometry(panelShape, {
+  depth: 1,
+  bevelEnabled: false,
+})
+
+const panelMesh = new THREE.Mesh(panelGeometry, materials.changeMe)
+panelMesh.scale.set(0.15, 0.1, 0.1)
+panelMesh.position.set(0, 0, -.1)
+
+displayGroup.add(panelMesh)
+
+// лампочки
+const bulbGeom = new THREE.CylinderGeometry(.08, .08, .1, 18, 1)
+const bulbMesh = new THREE.Mesh(bulbGeom, materials.changeMe)
+bulbMesh.rotation.x = Math.PI / 2
+bulbMesh.position.set(.63, .38, 0)
+const bulbMesh2 = bulbMesh.clone()
+bulbMesh2.position.set(-.63, .38, 0)
+
+displayGroup.add(bulbMesh, bulbMesh2)
+
+
+scene.add(displayGroup)
+displayGroup.position.set(0, -.95, 2)
+displayGroup.rotation.set(-.4, 0, 0)
 
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 0.1);
