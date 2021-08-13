@@ -62,6 +62,54 @@ scene.add(displayGroup)
 displayGroup.position.set(0, -.95, 2)
 displayGroup.rotation.set(-.4, 0, 0)
 
+// ручка штурвала
+const handleGroup = new THREE.Group()
+const handlePath = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(0, 2, 0),
+    new THREE.Vector3(1, 5, 0),
+    new THREE.Vector3(-3, 5, 3),
+    new THREE.Vector3(-3, 3.5, 3),
+    new THREE.Vector3(-1, 3.5, 0)
+])
+
+const handleGeom = new THREE.TubeGeometry(handlePath, 40, .35, 16, false)
+const handleMesh = new THREE.Mesh(handleGeom, materials.changeMe)
+handleMesh.scale.set(.3, .3, .3)
+handleGroup.add(handleMesh)
+
+// коробка под ручкой.
+// на ней мне нужна фаска, поэтому использую ExtrudeGeometry, а не BoxGeometry
+const handleBoxPath = new THREE.Shape()
+handleBoxPath
+    .moveTo(0, 0)
+    .lineTo(0, 1)
+    .lineTo(1, 1)
+    .lineTo(1, 0)
+    .lineTo(0, 0)
+
+const handleBoxGeom = new THREE.ExtrudeGeometry(handleBoxPath, {
+	steps: 1,
+	depth: 1.5,
+	bevelEnabled: true,
+	bevelThickness: .2,
+	bevelSize: .2,
+	bevelSegments: 3
+})
+const handleBoxMesh = new THREE.Mesh(handleBoxGeom, materials.changeMe)
+handleBoxMesh.scale.set(.5, .5, .5)
+handleBoxMesh.position.set(-.4, 0, .7)
+handleBoxMesh.rotateY(Math.PI/2)
+handleGroup.add(handleBoxMesh)
+
+
+handleGroup.position.set(-1.5, -1.5, 1)
+// правая ручка
+const handleGroup2 = handleGroup.clone()
+handleGroup2.scale.set(-1, 1, 1)
+handleGroup2.position.set(1.5, -1.5, 1)
+scene.add(handleGroup, handleGroup2)
+
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 0.1);
 pointLight.position.set(2, 3, 4);
