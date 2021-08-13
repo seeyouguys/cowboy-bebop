@@ -110,6 +110,42 @@ handleGroup2.scale.set(-1, 1, 1)
 handleGroup2.position.set(1.5, -1.5, 1)
 scene.add(handleGroup, handleGroup2)
 
+// капот
+const hoodPath = new THREE.Shape()
+    .moveTo(-2, 0)
+    .quadraticCurveTo(0, 1, 2, 0)
+    .lineTo(.3, 5)
+    .lineTo(-.3, 5)
+
+const hoodGeom = new THREE.ExtrudeGeometry(hoodPath, {
+	steps: 1,
+	depth: 1.5,
+	bevelEnabled: true,
+	bevelThickness: .2,
+	bevelSize: .8,
+	bevelSegments: 2
+})
+
+const hoodMesh = new THREE.Mesh(hoodGeom, materials.changeMe)
+hoodMesh.rotateX(-Math.PI / 2)
+hoodMesh.position.set(0, -2.3, 0)
+
+scene.add(hoodMesh)
+
+// оконная рама
+const frameGroup = new THREE.Group()
+
+const frameGeom = new THREE.TorusGeometry(2, .15, 16, 20, Math.PI / 2)
+const frameMesh = new THREE.Mesh(frameGeom, materials.changeMe)
+frameMesh.rotateY(Math.PI / 2)
+frameMesh.position.set(-1.8, -1, 2.1)
+
+const frameMesh2 = frameMesh.clone()
+frameMesh2.position.setX(1.8)
+
+frameGroup.add(frameMesh, frameMesh2)
+scene.add(frameGroup)
+
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 0.1);
 pointLight.position.set(2, 3, 4);
