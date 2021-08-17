@@ -4,8 +4,9 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
 
 // Загрузка текстур
-// const textureLoader = new THREE.TextureLoader()
+const textureLoader = new THREE.TextureLoader()
 // const normalTexture = textureLoader.load('/normal-map.png')
+const starSprite = textureLoader.load( '/disc.png' );
 
 const canvas = document.querySelector("canvas.webgl"); // Canvas
 const scene = new THREE.Scene(); // Scene
@@ -13,7 +14,14 @@ const scene = new THREE.Scene(); // Scene
 
 // В этом объекте хранятся все материалы
 const materials = {
-  changeMe: new THREE.MeshLambertMaterial(),
+    changeMe: new THREE.MeshLambertMaterial(),
+    star: new THREE.PointsMaterial({
+        size: .1,
+        map: starSprite,
+        alphaTest: 0.2, 
+        transparent: true, 
+        color: 0xffff00
+    })
 }
 
 const gui = new dat.GUI()
@@ -146,6 +154,36 @@ frameMesh2.position.setX(1.8)
 frameGroup.add(frameMesh, frameMesh2)
 scene.add(frameGroup)
 
+
+// Particles
+const particlesGeom = new THREE.BufferGeometry();
+const vertices = [];
+
+for ( let i = 0; i < 3000; i ++ ) {
+
+    // эти строки располагают точку в случайном месте поверхности цилиндра.
+    const R = 5
+    const x = 10 * Math.random() - 5
+    const sign = Math.random() < .5 ? 1 : -1 // формула следует из уравнения окружности
+    const y = Math.sqrt(R * R - x * x) * sign
+
+    const z = 30 * Math.random() - 30
+
+    vertices.push( x, y, z );
+
+    for ( let j = 0 ; j < 5 ; j+=1) vertices.push(x, y, z-j / 10)
+
+}
+
+particlesGeom.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+const particles = new THREE.Points( particlesGeom, materials.star );
+
+const particles2 = particles.clone()
+particles2.position.setZ(-30)
+
+scene.add( particles, particles2)
+
+
 // Lights
 const pointLight = new THREE.PointLight(0xffffff, 0.1);
 pointLight.position.set(2, 3, 4);
@@ -179,10 +217,10 @@ window.addEventListener("resize", () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(
-  75,
+  85,
   sizes.width / sizes.height,
   0.1,
-  100
+  30
 );
 camera.position.set(0, 0, 3)
 scene.add(camera);
@@ -211,23 +249,33 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 //     mouseY = e.clientY - window.innerHeight / 2;
 // })
 
-const clock = new THREE.Clock();
+// const clock = new THREE.Clock();
 
 const tick = () => {
-  // Update objects
-  // camera.lookAt( moleculePivot.position );
+    // Update objects
+    // camera.lookAt( moleculePivot.position );
 
-  // const elapsedTime = clock.getElapsedTime()
-  // moleculePivot.rotation.y = .3 * elapsedTime
+    // const elapsedTime = clock.getElapsedTime()
+    const SPEED = .25
+    particles.position.z += SPEED
+    particles2.position.z += SPEED
 
-  // Update Orbital Controls
-  controls.update();
+    // звезды расположены на 2 цилиндрах.
+    // цилиндр движется на камеру.
+    // когда он выходит за пределы видимости камеры, его откидывает обратно в начало.
+    // так, подменяя друг друга, они создают бесшовную бесконечную анимацию.
+    if (particles.position.z  > 30) particles.position.setZ(-30)
+    if (particles2.position.z  > 30) particles2.position.setZ(-30)
 
-  // Render
-  renderer.render(scene, camera);
 
-  // Call tick again on the next frame
-  window.requestAnimationFrame(tick);
+    // Update Orbital Controls
+    controls.update();
+
+    // Render
+    renderer.render(scene, camera);
+
+    // Call tick again on the next frame
+    window.requestAnimationFrame(tick);
 };
 
 tick();
