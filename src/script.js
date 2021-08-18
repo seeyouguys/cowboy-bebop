@@ -24,7 +24,7 @@ const materials = {
         transparent: true, 
         color: 0xffff00
     }),
-    hood: new THREE.MeshToonMaterial({
+    hood: new THREE.MeshLambertMaterial({
         color: 0xD65556,
     }),
     interior: new THREE.MeshToonMaterial({
