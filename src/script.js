@@ -2,6 +2,8 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
+import {OutlineEffect, PointLightHelper} from "three/examples/jsm/effects/OutlineEffect";
+
 
 // Загрузка текстур
 const textureLoader = new THREE.TextureLoader()
@@ -21,7 +23,22 @@ const materials = {
         alphaTest: 0.2, 
         transparent: true, 
         color: 0xffff00
-    })
+    }),
+    hood: new THREE.MeshToonMaterial({
+        color: 0xD65556,
+    }),
+    interior: new THREE.MeshToonMaterial({
+        color: 0x3A3D30,
+    }),
+    handle: new THREE.MeshToonMaterial({
+        color: 0x23262A,
+    }),
+    frame: new THREE.MeshToonMaterial({
+        color: 0x9a9a9b,
+    }),
+    bulb: new THREE.MeshToonMaterial({
+        color: 0x531924,
+    }),
 }
 
 const gui = new dat.GUI()
@@ -30,7 +47,7 @@ const displayGroup = new THREE.Group()
 
 // ободок дисплея
 const wheelGeom = new THREE.TorusGeometry(0.75, 0.05, 16, 100)
-const wheel = new THREE.Mesh(wheelGeom, materials.changeMe)
+const wheel = new THREE.Mesh(wheelGeom, materials.interior)
 wheel.position.set(0, -.3, 0)
 displayGroup.add(wheel)
 
@@ -49,7 +66,7 @@ const panelGeometry = new THREE.ExtrudeGeometry(panelShape, {
   bevelEnabled: false,
 })
 
-const panelMesh = new THREE.Mesh(panelGeometry, materials.changeMe)
+const panelMesh = new THREE.Mesh(panelGeometry, materials.interior)
 panelMesh.scale.set(0.15, 0.1, 0.1)
 panelMesh.position.set(0, 0, -.1)
 
@@ -57,7 +74,7 @@ displayGroup.add(panelMesh)
 
 // лампочки
 const bulbGeom = new THREE.CylinderGeometry(.08, .08, .1, 18, 1)
-const bulbMesh = new THREE.Mesh(bulbGeom, materials.changeMe)
+const bulbMesh = new THREE.Mesh(bulbGeom, materials.bulb)
 bulbMesh.rotation.x = Math.PI / 2
 bulbMesh.position.set(.63, .38, 0)
 const bulbMesh2 = bulbMesh.clone()
@@ -82,7 +99,7 @@ const handlePath = new THREE.CatmullRomCurve3([
 ])
 
 const handleGeom = new THREE.TubeGeometry(handlePath, 40, .35, 16, false)
-const handleMesh = new THREE.Mesh(handleGeom, materials.changeMe)
+const handleMesh = new THREE.Mesh(handleGeom, materials.handle)
 handleMesh.scale.set(.3, .3, .3)
 handleGroup.add(handleMesh)
 
@@ -104,7 +121,7 @@ const handleBoxGeom = new THREE.ExtrudeGeometry(handleBoxPath, {
 	bevelSize: .2,
 	bevelSegments: 3
 })
-const handleBoxMesh = new THREE.Mesh(handleBoxGeom, materials.changeMe)
+const handleBoxMesh = new THREE.Mesh(handleBoxGeom, materials.interior)
 handleBoxMesh.scale.set(.5, .5, .5)
 handleBoxMesh.position.set(-.4, 0, .7)
 handleBoxMesh.rotateY(Math.PI/2)
@@ -134,7 +151,7 @@ const hoodGeom = new THREE.ExtrudeGeometry(hoodPath, {
 	bevelSegments: 2
 })
 
-const hoodMesh = new THREE.Mesh(hoodGeom, materials.changeMe)
+const hoodMesh = new THREE.Mesh(hoodGeom, materials.hood)
 hoodMesh.rotateX(-Math.PI / 2)
 hoodMesh.position.set(0, -2.3, 0)
 
@@ -144,7 +161,7 @@ scene.add(hoodMesh)
 const frameGroup = new THREE.Group()
 
 const frameGeom = new THREE.TorusGeometry(2, .15, 16, 20, Math.PI / 2)
-const frameMesh = new THREE.Mesh(frameGeom, materials.changeMe)
+const frameMesh = new THREE.Mesh(frameGeom, materials.frame)
 frameMesh.rotateY(Math.PI / 2)
 frameMesh.position.set(-1.8, -1, 2.1)
 
@@ -185,10 +202,13 @@ scene.add( particles, particles2)
 
 
 // Lights
-const pointLight = new THREE.PointLight(0xffffff, 0.1);
-pointLight.position.set(2, 3, 4);
-pointLight.intensity = 1;
-scene.add(pointLight);
+const pointLight = new THREE.PointLight(0xffffff, 1.5, 8)
+pointLight.position.set(0, 2.2, -1);
+
+const pointLight2 = new THREE.PointLight(0xffffff, 0.2);
+pointLight2.position.set(0, 4, 5.5);
+
+scene.add(pointLight, pointLight2)
 
 /**
  * Sizes
@@ -210,6 +230,8 @@ window.addEventListener("resize", () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  outline.setSize(sizes.width, sizes.height)
 });
 
 /**
@@ -238,6 +260,12 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// OutlineEffect
+const outline = new OutlineEffect(renderer, {
+    defaultThickness: .01,
+})
+
 
 /**
  * Animate
@@ -273,6 +301,7 @@ const tick = () => {
 
     // Render
     renderer.render(scene, camera);
+    outline.render(scene, camera)
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick);
