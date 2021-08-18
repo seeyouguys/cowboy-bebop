@@ -13,7 +13,22 @@ const scene = new THREE.Scene(); // Scene
 
 // В этом объекте хранятся все материалы
 const materials = {
-  changeMe: new THREE.MeshLambertMaterial(),
+    changeMe: new THREE.MeshPhongMaterial(),
+    hood: new THREE.MeshToonMaterial({
+        color: 0xD65556,
+    }),
+    interior: new THREE.MeshToonMaterial({
+        color: 0x3A3D30,
+    }),
+    handle: new THREE.MeshToonMaterial({
+        color: 0x23262A,
+    }),
+    frame: new THREE.MeshToonMaterial({
+        color: 0x9a9a9b,
+    }),
+    bulb: new THREE.MeshToonMaterial({
+        color: 0x531924,
+    }),
 }
 
 const gui = new dat.GUI()
@@ -22,7 +37,7 @@ const displayGroup = new THREE.Group()
 
 // ободок дисплея
 const wheelGeom = new THREE.TorusGeometry(0.75, 0.05, 16, 100)
-const wheel = new THREE.Mesh(wheelGeom, materials.changeMe)
+const wheel = new THREE.Mesh(wheelGeom, materials.interior)
 wheel.position.set(0, -.3, 0)
 displayGroup.add(wheel)
 
@@ -41,7 +56,7 @@ const panelGeometry = new THREE.ExtrudeGeometry(panelShape, {
   bevelEnabled: false,
 })
 
-const panelMesh = new THREE.Mesh(panelGeometry, materials.changeMe)
+const panelMesh = new THREE.Mesh(panelGeometry, materials.interior)
 panelMesh.scale.set(0.15, 0.1, 0.1)
 panelMesh.position.set(0, 0, -.1)
 
@@ -49,7 +64,7 @@ displayGroup.add(panelMesh)
 
 // лампочки
 const bulbGeom = new THREE.CylinderGeometry(.08, .08, .1, 18, 1)
-const bulbMesh = new THREE.Mesh(bulbGeom, materials.changeMe)
+const bulbMesh = new THREE.Mesh(bulbGeom, materials.bulb)
 bulbMesh.rotation.x = Math.PI / 2
 bulbMesh.position.set(.63, .38, 0)
 const bulbMesh2 = bulbMesh.clone()
@@ -74,7 +89,7 @@ const handlePath = new THREE.CatmullRomCurve3([
 ])
 
 const handleGeom = new THREE.TubeGeometry(handlePath, 40, .35, 16, false)
-const handleMesh = new THREE.Mesh(handleGeom, materials.changeMe)
+const handleMesh = new THREE.Mesh(handleGeom, materials.handle)
 handleMesh.scale.set(.3, .3, .3)
 handleGroup.add(handleMesh)
 
@@ -96,7 +111,7 @@ const handleBoxGeom = new THREE.ExtrudeGeometry(handleBoxPath, {
 	bevelSize: .2,
 	bevelSegments: 3
 })
-const handleBoxMesh = new THREE.Mesh(handleBoxGeom, materials.changeMe)
+const handleBoxMesh = new THREE.Mesh(handleBoxGeom, materials.interior)
 handleBoxMesh.scale.set(.5, .5, .5)
 handleBoxMesh.position.set(-.4, 0, .7)
 handleBoxMesh.rotateY(Math.PI/2)
@@ -126,7 +141,7 @@ const hoodGeom = new THREE.ExtrudeGeometry(hoodPath, {
 	bevelSegments: 2
 })
 
-const hoodMesh = new THREE.Mesh(hoodGeom, materials.changeMe)
+const hoodMesh = new THREE.Mesh(hoodGeom, materials.hood)
 hoodMesh.rotateX(-Math.PI / 2)
 hoodMesh.position.set(0, -2.3, 0)
 
@@ -136,7 +151,7 @@ scene.add(hoodMesh)
 const frameGroup = new THREE.Group()
 
 const frameGeom = new THREE.TorusGeometry(2, .15, 16, 20, Math.PI / 2)
-const frameMesh = new THREE.Mesh(frameGeom, materials.changeMe)
+const frameMesh = new THREE.Mesh(frameGeom, materials.frame)
 frameMesh.rotateY(Math.PI / 2)
 frameMesh.position.set(-1.8, -1, 2.1)
 
