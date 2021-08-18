@@ -149,7 +149,6 @@ handleGroup.position.set(-1.5, -1.5, 1)
 const handleGroup2 = handleGroup.clone()
 handleGroup2.scale.set(-1, 1, 1)
 handleGroup2.position.set(1.5, -1.5, 1)
-scene.add(handleGroup, handleGroup2)
 
 // капот
 const hoodPath = new THREE.Shape()
@@ -171,7 +170,6 @@ const hoodMesh = new THREE.Mesh(hoodGeom, materials.hood)
 hoodMesh.rotateX(-Math.PI / 2)
 hoodMesh.position.set(0, -2.3, 0)
 
-scene.add(hoodMesh)
 
 // оконная рама
 const frameGroup = new THREE.Group()
@@ -185,7 +183,6 @@ const frameMesh2 = frameMesh.clone()
 frameMesh2.position.setX(1.8)
 
 frameGroup.add(frameMesh, frameMesh2)
-scene.add(frameGroup)
 
 
 // Particles
@@ -260,8 +257,12 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   30
 );
-camera.position.set(0, 0, 3)
-scene.add(camera);
+camera.position.set(0, -.25, 3)
+
+// корабль целиком
+const wholeShip = new THREE.Group()
+wholeShip.add(hoodMesh, frameGroup, handleGroup, handleGroup2, displayGroup, camera)
+scene.add(wholeShip)
 
 // OrbitControls, если раскоментировать, то можно вращать камеру мышкой
 const controls = new OrbitControls(camera, canvas);
@@ -281,7 +282,6 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const outline = new OutlineEffect(renderer, {
     defaultThickness: .01,
 })
-
 
 /**
  * Animate
@@ -318,6 +318,10 @@ const tick = () => {
     if (particles.position.z  > 30) particles.position.setZ(-30)
     if (particles2.position.z  > 30) particles2.position.setZ(-30)
 
+    // корабль шатается вправо-влево и вверх-вниз
+    // по разным синусоидам, потому что так выглядит круче
+    wholeShip.rotation.z = Math.sin(elapsedTime) * .1
+    wholeShip.position.y = Math.sin(1.5* elapsedTime) * .2
 
     // Update Orbital Controls
     controls.update();
