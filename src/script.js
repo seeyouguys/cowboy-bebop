@@ -10,6 +10,14 @@ const textureLoader = new THREE.TextureLoader()
 // const normalTexture = textureLoader.load('/normal-map.png')
 const starSprite = textureLoader.load( '/disc.png' );
 
+// Видеотекстура для дисплея и настройки ее расположения
+const video = document.getElementById( 'video' )
+video.defaultPlaybackRate = .5
+video.play()
+const videoTexture = new THREE.VideoTexture( video )
+videoTexture.repeat.set( .5, 1 )
+videoTexture.offset.set(.25, .003)
+
 const canvas = document.querySelector("canvas.webgl"); // Canvas
 const scene = new THREE.Scene(); // Scene
 // const gui = new dat.GUI() // Графический дебаггер
@@ -39,9 +47,11 @@ const materials = {
     bulb: new THREE.MeshToonMaterial({
         color: 0x531924,
     }),
+    displayVideo: new THREE.MeshToonMaterial({
+        color: 0xFFFF00,
+        map: videoTexture
+    })
 }
-
-const gui = new dat.GUI()
 
 const displayGroup = new THREE.Group()
 
@@ -83,7 +93,13 @@ bulbMesh2.position.set(-.63, .38, 0)
 displayGroup.add(bulbMesh, bulbMesh2)
 
 
-scene.add(displayGroup)
+// экран
+const displayContentGeom = new THREE.CircleGeometry(0.75, 30)
+const displayContentMesh = new THREE.Mesh(displayContentGeom, materials.displayVideo)
+displayContentMesh.position.set(0, -.3, .001)
+
+displayGroup.add(displayContentMesh)
+
 displayGroup.position.set(0, -.95, 2)
 displayGroup.rotation.set(-.4, 0, 0)
 
