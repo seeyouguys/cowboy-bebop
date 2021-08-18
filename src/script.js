@@ -162,10 +162,13 @@ frameGroup.add(frameMesh, frameMesh2)
 scene.add(frameGroup)
 
 // Lights
-const pointLight = new THREE.PointLight(0xffffff, 0.1);
-pointLight.position.set(2, 3, 4);
-pointLight.intensity = 1;
-scene.add(pointLight);
+const pointLight = new THREE.PointLight(0xffffff, 1.5, 8)
+pointLight.position.set(0, 2.2, -1);
+
+const pointLight2 = new THREE.PointLight(0xffffff, 0.2);
+pointLight2.position.set(0, 4, 5.5);
+
+scene.add(pointLight, pointLight2)
 
 /**
  * Sizes
