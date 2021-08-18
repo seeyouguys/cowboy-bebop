@@ -2,12 +2,12 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
-import {OutlineEffect, PointLightHelper} from "three/examples/jsm/effects/OutlineEffect";
+import { OutlineEffect } from "three/examples/jsm/effects/OutlineEffect";
+import Stats from "stats.js"
 
 
 // Загрузка текстур
 const textureLoader = new THREE.TextureLoader()
-// const normalTexture = textureLoader.load('/normal-map.png')
 const starSprite = textureLoader.load( '/disc.png' );
 
 // Видеотекстура для дисплея и настройки ее расположения
@@ -20,7 +20,7 @@ videoTexture.offset.set(.25, .003)
 
 const canvas = document.querySelector("canvas.webgl"); // Canvas
 const scene = new THREE.Scene(); // Scene
-// const gui = new dat.GUI() // Графический дебаггер
+const gui = new dat.GUI() // Графический дебаггер
 
 // В этом объекте хранятся все материалы
 const materials = {
@@ -293,14 +293,21 @@ const outline = new OutlineEffect(renderer, {
 //     mouseY = e.clientY - window.innerHeight / 2;
 // })
 
-// const clock = new THREE.Clock();
+const clock = new THREE.Clock();
+
+// stats измеряет производительность сцены
+const stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
 
 const tick = () => {
     // Update objects
     // camera.lookAt( moleculePivot.position );
 
-    // const elapsedTime = clock.getElapsedTime()
-    const SPEED = .25
+    stats.begin()
+
+    const elapsedTime = clock.getElapsedTime()
+    const SPEED = .5
     particles.position.z += SPEED
     particles2.position.z += SPEED
 
@@ -316,8 +323,10 @@ const tick = () => {
     controls.update();
 
     // Render
-    renderer.render(scene, camera);
+    // renderer.render(scene, camera);
     outline.render(scene, camera)
+
+    stats.end()
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick);
