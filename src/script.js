@@ -2,6 +2,8 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
+import {OutlineEffect, PointLightHelper} from "three/examples/jsm/effects/OutlineEffect";
+
 
 // Загрузка текстур
 // const textureLoader = new THREE.TextureLoader()
@@ -190,6 +192,8 @@ window.addEventListener("resize", () => {
   // Update renderer
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  outline.setSize(sizes.width, sizes.height)
 });
 
 /**
@@ -219,6 +223,12 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+// OutlineEffect
+const outline = new OutlineEffect(renderer, {
+    defaultThickness: .01,
+})
+
+
 /**
  * Animate
  */
@@ -243,6 +253,7 @@ const tick = () => {
 
   // Render
   renderer.render(scene, camera);
+  outline.render(scene, camera)
 
   // Call tick again on the next frame
   window.requestAnimationFrame(tick);
