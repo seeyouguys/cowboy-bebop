@@ -271,8 +271,8 @@ wholeShip.add(hoodMesh, frameGroup, handleGroup, handleGroup2, displayGroup, cam
 scene.add(wholeShip)
 
 // OrbitControls, если раскоментировать, то можно вращать камеру мышкой
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
 /**
  * Renderer
