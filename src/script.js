@@ -1,4 +1,5 @@
 import "./style.css";
+
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
@@ -20,10 +21,11 @@ videoTexture.offset.set(.25, .003)
 
 const canvas = document.querySelector("canvas.webgl"); // Canvas
 const scene = new THREE.Scene(); // Scene
-const gui = new dat.GUI() // Графический дебаггер
+// const gui = new dat.GUI() // Графический дебаггер
+
 
 // В этом объекте хранятся все материалы
-const materials = {
+let materials = {
     changeMe: new THREE.MeshLambertMaterial(),
     star: new THREE.PointsMaterial({
         size: .1,
@@ -49,6 +51,10 @@ const materials = {
     }),
     displayVideo: new THREE.MeshToonMaterial({
         color: 0xFFFF00,
+        map: videoTexture
+    }),
+    displayVideoNitro: new THREE.MeshToonMaterial({
+        color: 0xFF0000,
         map: videoTexture
     })
 }
@@ -300,6 +306,9 @@ const stats = new Stats();
 stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild( stats.dom );
 
+// флаг, который включается при зажатии пробела
+let nitro = false
+
 const tick = () => {
     // Update objects
     // camera.lookAt( moleculePivot.position );
@@ -307,7 +316,7 @@ const tick = () => {
     stats.begin()
 
     const elapsedTime = clock.getElapsedTime()
-    const SPEED = .5
+    const SPEED = nitro ? 3 : .5
     particles.position.z += SPEED
     particles2.position.z += SPEED
 
@@ -337,3 +346,18 @@ const tick = () => {
 };
 
 tick();
+
+// "Ускорение" при нажатии пробела
+window.addEventListener('keydown', (e) => {
+    if (e.key === ' ' && !nitro) {
+        nitro = true
+        displayContentMesh.material = materials.displayVideoNitro
+    }
+})
+
+window.addEventListener('keyup', e => {
+    if (e.key === ' ' && nitro)
+        displayContentMesh.material = materials.displayVideo
+        nitro = false
+})
+
