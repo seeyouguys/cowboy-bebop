@@ -333,7 +333,7 @@ const tick = () => {
     wholeShip.position.y = Math.sin(1.5* elapsedTime) * .2
 
     // Update Orbital Controls
-    controls.update();
+    // controls.update();
 
     // Render
     // renderer.render(scene, camera);
