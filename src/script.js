@@ -9,7 +9,7 @@ import Stats from "stats.js"
 
 // Загрузка текстур
 const textureLoader = new THREE.TextureLoader()
-const starSprite = textureLoader.load( '/disc.png' );
+const starSprite = textureLoader.load( 'disc.png' );
 
 // Видеотекстура для дисплея и настройки ее расположения
 const video = document.getElementById( 'video' )
